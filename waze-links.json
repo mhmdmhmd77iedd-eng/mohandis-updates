@@ -1,0 +1,7 @@
+{
+  "_note": "روابط تنزيل ويز حسب الشاشة. التطبيق يقرأ هذا الملف من النت، فتبديل رابط هنا يوصل لكل الشاشات بدون تحديث. أول سطر يطابق الشاشة هو اللي ينستخدم. direct=true يعني الرابط ينزّل ملف APK مباشرة.",
+  "links": [
+    { "minSdk": 29, "abi": "any", "version": "آخر نسخة", "url": "https://d.apkpure.com/b/APK/com.waze?version=latest", "direct": true },
+    { "minSdk": 23, "maxSdk": 28, "abi": "any", "version": "5.8.1", "url": "https://apkpure.com/waze-navigation-live-traffic/com.waze/versions", "direct": false }
+  ]
+}
