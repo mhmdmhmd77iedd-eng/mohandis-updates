@@ -1,14 +1,14 @@
 {
   "stable": {
-    "code": 14,
-    "name": "1.4",
-    "url": "https://raw.githubusercontent.com/mhmdmhmd77iedd-eng/mohandis-updates/main/apk/mohandis-1.4.apk",
-    "notes": "يوتيوب ما يتقطّع لما تصغّر الفيديو للبطاقة، وأغنية البلوتوث ما توكف، وبنهاية الفيديو تطلع الاقتراحات بدل ما يشغّل غيره وحده."
+    "code": 16,
+    "name": "1.6",
+    "url": "https://raw.githubusercontent.com/mhmdmhmd77iedd-eng/mohandis-updates/main/apk/mohandis-1.6.apk",
+    "notes": "زر «صوت الهاتف» بالشريط يحوّل الصوت للهاتف بدوسة، ويتحوّل وحده أول ما يتصل الهاتف. يوتيوب الصغير ما يتقطّع، والرئيسية تفتح أسرع."
   },
   "beta": {
-    "code": 14,
-    "name": "1.4",
-    "url": "https://raw.githubusercontent.com/mhmdmhmd77iedd-eng/mohandis-updates/main/apk/mohandis-1.4.apk",
-    "notes": "يوتيوب ما يتقطّع لما تصغّر الفيديو للبطاقة، وأغنية البلوتوث ما توكف، وبنهاية الفيديو تطلع الاقتراحات بدل ما يشغّل غيره وحده."
+    "code": 16,
+    "name": "1.6",
+    "url": "https://raw.githubusercontent.com/mhmdmhmd77iedd-eng/mohandis-updates/main/apk/mohandis-1.6.apk",
+    "notes": "زر «صوت الهاتف» بالشريط يحوّل الصوت للهاتف بدوسة، ويتحوّل وحده أول ما يتصل الهاتف. يوتيوب الصغير ما يتقطّع، والرئيسية تفتح أسرع."
   }
 }
