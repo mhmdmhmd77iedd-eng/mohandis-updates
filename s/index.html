@@ -138,8 +138,10 @@ h2{font-size:15px;color:var(--mut);font-weight:500;margin:24px 4px 8px}
   function showIos(link) {
     setup.hidden = false;
     if (link) {
-      st.innerHTML = 'خطوة وحدة: دوس الزر وبعدين <b>إضافة اختصار</b>. بعدها من ويز التلفون: <b>مشاركة ← دز للسيارة</b>.';
-      sb.textContent = 'أضف «دز للسيارة» للمشاركة'; sb.href = link; sb.hidden = false;
+      st.innerHTML = 'دوس الزر وبعدين <b>إضافة اختصار</b>. مرة وحدة بس.';
+      sb.textContent = 'أضف «دز للسيارة»'; sb.href = link; sb.hidden = false; ss.hidden = false;
+      ss.innerHTML = '<li><b>الاستعمال:</b> من ويز أو الخرائط أو الواتساب دوس <b>مشاركة ← دز للسيارة</b>، والموقع ينفتح بويز الشاشة.</li><li>أو انسخ الموقع وكول لسيري «دز للسيارة».</li>' +
+        '<li><b>تحب أيقونة بالشاشة الرئيسية؟ (مو ضرورية)</b> افتح تطبيق الاختصارات ← دوس مطوّل على <b>دز للسيارة</b> ← مشاركة ← <b>إضافة إلى الشاشة الرئيسية</b>.</li>';
       sb.onclick = function () { set('mh_setup', '1'); };
     } else {
       st.innerHTML = 'حتى يطلع <b>دز للسيارة</b> بمشاركة ويز، سوّي هذا مرة وحدة:';
