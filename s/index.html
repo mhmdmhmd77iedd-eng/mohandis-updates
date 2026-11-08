@@ -76,6 +76,8 @@ h2{font-size:15px;color:var(--mut);font-weight:500;margin:24px 4px 8px}
   var h = location.hash.replace('#', '').trim();
   if (/^mh[a-z0-9]{8,30}$/.test(h)) { set('mh_code', h); history.replaceState(null, '', location.pathname + location.search); }
   var code = get('mh_code');
+  // إذا الصفحة كانت مفتوحة وصوّر رمز جديد
+  window.addEventListener('hashchange', function () { if (/^#mh[a-z0-9]{8,30}$/.test(location.hash)) location.reload(); });
 
   // شي جاي من المشاركة (أندرويد) أو من اختصار الآيفون
   var qs = new URLSearchParams(location.search);
