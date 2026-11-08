@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="دز للسيارة">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b0c10">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<title>دز للسيارة</title>
+<style>
+:root{--bg:#0b0c10;--panel:#16181f;--line:#262a33;--ink:#f2f2f5;--mut:#9a9eab;--acc:#f5b942;--ok:#4cd964;--bad:#ff6b6b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px -apple-system,system-ui,"Segoe UI",sans-serif;padding:calc(env(safe-area-inset-top) + 20px) 16px 40px;max-width:560px;margin:0 auto}
+h1{font-size:28px;margin:8px 4px 2px}.sub{color:var(--mut);margin:0 4px 20px;font-size:15px;line-height:1.6}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:6px;display:flex;gap:6px}
+input{flex:1;min-width:0;background:none;border:0;color:var(--ink);font:inherit;font-size:18px;padding:14px 12px;outline:none}
+button,.btn{font:inherit;border:0;border-radius:14px;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+.go{background:var(--acc);color:#000;font-weight:700;padding:0 22px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.fav{background:var(--panel);border:1px solid var(--line);color:var(--ink);padding:16px;font-size:17px}
+.msg{min-height:26px;margin:16px 4px;font-weight:600;font-size:18px;color:var(--acc)}
+.msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
+h2{font-size:15px;color:var(--mut);font-weight:500;margin:24px 4px 8px}
+.rec{background:var(--panel);border-radius:16px;overflow:hidden;border:1px solid var(--line)}
+.rec button{display:block;width:100%;text-align:right;background:none;color:var(--ink);padding:14px 16px;border-radius:0;border-top:1px solid var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rec button:first-child{border-top:0}
+.setup{background:var(--panel);border:1px solid var(--acc);border-radius:18px;padding:16px;margin:0 0 22px}
+.setup p{margin:0 0 12px;color:var(--mut);line-height:1.7;font-size:15px}.setup b{color:var(--ink)}
+.big{display:block;width:100%;background:var(--acc);color:#000;font-weight:700;padding:16px;font-size:18px}
+.steps{padding-right:20px;margin:6px 0 0;color:var(--mut);line-height:1.8;font-size:15px}.steps b{color:var(--ink)}
+.url{display:block;width:100%;margin-top:6px;background:#0b0c10;border:1px solid var(--line);border-radius:10px;color:var(--acc);font:14px ui-monospace,monospace;padding:10px;direction:ltr;text-align:left}
+.none{text-align:center;padding:40px 10px;color:var(--mut);line-height:1.8}
+.none b{display:block;color:var(--ink);font-size:22px;margin-bottom:10px}
+.small{color:var(--mut);font-size:13px;margin:26px 4px 0;line-height:1.6}
+.small button{background:none;color:var(--mut);text-decoration:underline;padding:0;font-size:13px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<div id="none" class="none" hidden>
+  <b>الصفحة مو مربوطة بسيارة</b>
+  روح لشاشة السيارة: الإعدادات ← الملاحة، وصوّر الرمز بكاميرا التلفون.
+</div>
+
+<main id="app" hidden>
+  <h1>وين رايح؟</h1>
+  <p class="sub">اكتب المكان أو الصق رابط من ويز أو الخرائط، وينفتح بويز السيارة.</p>
+
+  <div id="setup" class="setup" hidden>
+    <p id="setupText"></p>
+    <a id="setupBtn" class="btn big" href="#"></a>
+    <ol id="setupSteps" class="steps" hidden></ol>
+  </div>
+
+  <form class="box" id="f"><input id="q" placeholder="مثلاً: مول بغداد، أو رابط" autocomplete="off" enterkeyhint="go"><button class="go">دز</button></form>
+  <div class="row"><button class="fav" data-f="home">🏠 البيت</button><button class="fav" data-f="work">💼 الشغل</button></div>
+  <div class="msg" id="m"></div>
+  <h2 id="rh" hidden>آخر الأماكن</h2><div class="rec" id="r"></div>
+  <p class="small">مربوطة بسيارتك. إذا بدّلت الشاشة أو غيّرت رمزها، صوّر الرمز الجديد من الإعدادات. <button id="again">طلّع خطوات الربط مرة ثانية</button></p>
+</main>
+
+<script>
+(function () {
+  var RELAY = 'https://ntfy.sh/';
+  var PAGE = location.origin + location.pathname;
+  function $(id) { return document.getElementById(id); }
+  function get(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
+  function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  // الرمز يجي من الـQR (#mh...) وينحفظ للأبد
+  var h = location.hash.replace('#', '').trim();
+  if (/^mh[a-z0-9]{8,30}$/.test(h)) { set('mh_code', h); history.replaceState(null, '', location.pathname + location.search); }
+  var code = get('mh_code');
+
+  // شي جاي من المشاركة (أندرويد) أو من اختصار الآيفون
+  var qs = new URLSearchParams(location.search);
+  var shared = [qs.get('q'), qs.get('title'), qs.get('text'), qs.get('url')]
+    .filter(function (x) { return x && x.trim(); })
+    .filter(function (x, i, a) { return a.indexOf(x) === i; }).join('\n').trim();
+  if (location.search) history.replaceState(null, '', location.pathname);
+
+  if (!code) { $('none').hidden = false; return; }
+  $('app').hidden = false;
+
+  var m = $('m'), q = $('q'), r = $('r');
+  function say(t, cls) { m.textContent = t; m.className = 'msg' + (cls ? ' ' + cls : ''); }
+  function rec() { try { return JSON.parse(get('mh_rec') || '[]'); } catch (e) { return []; } }
+  function draw() {
+    var a = rec(); r.innerHTML = ''; $('rh').hidden = !a.length;
+    a.forEach(function (t) { var b = document.createElement('button'); b.textContent = t; b.onclick = function () { send(t, t); }; r.appendChild(b); });
+  }
+  function keep(t) { var a = rec().filter(function (x) { return x !== t; }); a.unshift(t); set('mh_rec', JSON.stringify(a.slice(0, 8))); draw(); }
+
+  // ننتظر رد الشاشة «انفتح» حتى نطمّن الزبون
+  function waitOk(since, tries) {
+    return fetch(RELAY + code + '-ok/json?poll=1&since=' + since).then(function (x) { return x.text(); }).then(function (t) {
+      var last = null;
+      t.split('\n').forEach(function (l) { try { var j = JSON.parse(l); if (j.event === 'message') last = j.message; } catch (e) {} });
+      if (last) return last;
+      if (tries <= 0) return null;
+      return new Promise(function (res) { setTimeout(res, 1500); }).then(function () { return waitOk(since, tries - 1); });
+    }).catch(function () { return tries > 0 ? waitOk(since, tries - 1) : null; });
+  }
+
+  var busy = false;
+  function send(body, label) {
+    if (busy) return; busy = true;
+    say('دا أدز…');
+    var since = Math.floor(Date.now() / 1000) - 1;
+    fetch(RELAY + code, { method: 'POST', body: body })
+      .then(function (x) { if (!x.ok) throw 0; say('انرسل، دا أنتظر الشاشة…'); return waitOk(since, 8); })
+      .then(function (ack) {
+        busy = false;
+        if (label) keep(label);
+        if (!ack) return say('انرسل. إذا الشاشة طافية أو بلا نت، ينفتح أول ما تشتغل (خلال ٣ دقايق).');
+        var ok = ack.charAt(0) === '1', txt = ack.slice(2);
+        say(ok ? '✓ ' + (txt || 'انفتح بالشاشة') : txt || 'ما انفتح ويز بالشاشة', ok ? 'ok' : 'bad');
+      })
+      .catch(function () { busy = false; say('ما انرسل. تأكد التلفون بيه نت.', 'bad'); });
+  }
+
+  $('f').onsubmit = function (e) { e.preventDefault(); var t = q.value.trim(); if (t) { send(t, t); q.blur(); q.value = ''; } };
+  document.querySelectorAll('.fav').forEach(function (b) { b.onclick = function () { send('fav:' + b.dataset.f); }; });
+  draw();
+
+  // ===== الربط: زر «دز للسيارة» بقائمة المشاركة =====
+  var ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  var setup = $('setup'), st = $('setupText'), sb = $('setupBtn'), ss = $('setupSteps');
+
+  function showIos(link) {
+    setup.hidden = false;
+    if (link) {
+      st.innerHTML = 'خطوة وحدة: دوس الزر وبعدين <b>إضافة اختصار</b>. بعدها من ويز التلفون: <b>مشاركة ← دز للسيارة</b>.';
+      sb.textContent = 'أضف «دز للسيارة» للمشاركة'; sb.href = link; sb.hidden = false;
+      sb.onclick = function () { set('mh_setup', '1'); };
+    } else {
+      st.innerHTML = 'حتى يطلع <b>دز للسيارة</b> بمشاركة ويز، سوّي هذا مرة وحدة:';
+      sb.hidden = true; ss.hidden = false;
+      ss.innerHTML = '<li>افتح تطبيق <b>الاختصارات</b> ودوس <b>+</b></li>' +
+        '<li>أضف إجراء <b>فتح عناوين URL</b> (Open URLs) والصق هذا، وبعد <b>q=</b> اختار <b>مُدخل الاختصار</b>:<input class="url" readonly onclick="this.select()" value="' + PAGE + '?q="></li>' +
+        '<li>من ⓘ فعّل <b>إظهار في ورقة المشاركة</b>، وسمّه <b>دز للسيارة</b></li>';
+    }
+  }
+
+  var deferred = null;
+  function showAndroid() {
+    setup.hidden = false;
+    if (deferred) {
+      st.innerHTML = 'خطوة وحدة: دوس الزر وبعدين <b>تثبيت</b>. بعدها من ويز التلفون: <b>مشاركة ← دز للسيارة</b>.';
+      sb.textContent = 'ثبّت «دز للسيارة»'; sb.hidden = false; ss.hidden = true;
+      sb.onclick = function (e) {
+        e.preventDefault();
+        deferred.prompt();
+        deferred.userChoice.then(function (c) { if (c.outcome === 'accepted') { set('mh_setup', '1'); setup.hidden = true; say('✓ تم. هسه من ويز: مشاركة ← دز للسيارة', 'ok'); } });
+      };
+    } else {
+      st.innerHTML = 'حتى يطلع <b>دز للسيارة</b> بمشاركة ويز: من قائمة كروم <b>⋮</b> دوس <b>تثبيت التطبيق</b> (أو إضافة إلى الشاشة الرئيسية).';
+      sb.hidden = true; ss.hidden = true;
+    }
+  }
+
+  function startSetup(force) {
+    if (standalone && !force) { set('mh_setup', '1'); }
+    if (get('mh_setup') && !force) return;
+    if (ios) {
+      fetch('config.json', { cache: 'no-store' }).then(function (x) { return x.json(); })
+        .then(function (c) { showIos(c.iosShortcut || ''); }).catch(function () { showIos(''); });
+    } else showAndroid();
+  }
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferred = e; if (!setup.hidden || !get('mh_setup')) { if (!ios && !standalone) showAndroid(); } });
+  window.addEventListener('appinstalled', function () { set('mh_setup', '1'); setup.hidden = true; });
+  $('again').onclick = function () { startSetup(true); window.scrollTo(0, 0); };
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
+
+  if (shared) { q.value = ''; send(shared, shared); }
+  else startSetup(false);
+})();
+</script>
+</body>
+</html>
