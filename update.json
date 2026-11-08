@@ -1,14 +1,14 @@
 {
   "stable": {
-    "code": 16,
-    "name": "1.6",
-    "url": "https://raw.githubusercontent.com/mhmdmhmd77iedd-eng/mohandis-updates/main/apk/mohandis-1.6.apk",
-    "notes": "زر «صوت الهاتف» بالشريط يحوّل الصوت للهاتف بدوسة، ويتحوّل وحده أول ما يتصل الهاتف. يوتيوب الصغير ما يتقطّع، والرئيسية تفتح أسرع."
+    "code": 18,
+    "name": "1.8",
+    "url": "https://raw.githubusercontent.com/mhmdmhmd77iedd-eng/mohandis-updates/main/apk/mohandis-1.8.apk",
+    "notes": "خلفيات سينمائية جديدة للثيمات. زر البلوتوث يفتح صفحة صوت الهاتف داخل التطبيق، ومفتاح «الهاتف | يوتيوب» بالرئيسية. أزرار الستيرن تتحكم بيوتيوب. يوتيوب ما يتقطّع ويكمّل من وين وكف، والبحث صار ببطاقات كبيرة."
   },
   "beta": {
-    "code": 16,
-    "name": "1.6",
-    "url": "https://raw.githubusercontent.com/mhmdmhmd77iedd-eng/mohandis-updates/main/apk/mohandis-1.6.apk",
-    "notes": "زر «صوت الهاتف» بالشريط يحوّل الصوت للهاتف بدوسة، ويتحوّل وحده أول ما يتصل الهاتف. يوتيوب الصغير ما يتقطّع، والرئيسية تفتح أسرع."
+    "code": 18,
+    "name": "1.8",
+    "url": "https://raw.githubusercontent.com/mhmdmhmd77iedd-eng/mohandis-updates/main/apk/mohandis-1.8.apk",
+    "notes": "خلفيات سينمائية جديدة للثيمات. زر البلوتوث يفتح صفحة صوت الهاتف داخل التطبيق، ومفتاح «الهاتف | يوتيوب» بالرئيسية. أزرار الستيرن تتحكم بيوتيوب. يوتيوب ما يتقطّع ويكمّل من وين وكف، والبحث صار ببطاقات كبيرة."
   }
 }
